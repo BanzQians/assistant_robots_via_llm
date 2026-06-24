@@ -36,13 +36,21 @@ git lfs install
 
 This repo includes `.gitattributes` patterns for `local_assets` binary files.
 
-## Build Docker Image
+## Runtime Options
+
+Docker is recommended for reproducing this branch exactly, but it is not the
+only supported path. A local Isaac Sim 4.5 + conda environment can run the same
+Python demos.
+
+### Docker
+
+Build the image:
 
 ```bash
 docker build -t internutopia-b2z1-pin:2.2.0 -f docker/b2z1-pin.Dockerfile .
 ```
 
-## Run B2Z1 Locomotion
+Run B2Z1 locomotion through the wrapper:
 
 GUI:
 
@@ -56,13 +64,13 @@ Headless smoke test:
 HEADLESS=1 STEPS=500 SCENE=mini_home ./run_b2z1_grscene.sh
 ```
 
-## Run B2Z1 Asset Load
+Run B2Z1 asset load:
 
 ```bash
 ./run_internutopia_docker.sh -lc 'source /isaac-sim/.venv/bin/activate && source /isaac-sim/python.env.init && cd /isaac-sim/InternUtopia && python internutopia/demo/b2z1_asset_load.py'
 ```
 
-## Run B2Z1 Grasp Demo
+Run B2Z1 grasp demo:
 
 ```bash
 ./run_internutopia_docker.sh -lc 'source /isaac-sim/.venv/bin/activate && source /isaac-sim/python.env.init && cd /isaac-sim/InternUtopia && python internutopia/demo/b2z1_grasp_demo.py --object box'
@@ -73,6 +81,34 @@ Other objects:
 ```bash
 ./run_internutopia_docker.sh -lc 'source /isaac-sim/.venv/bin/activate && source /isaac-sim/python.env.init && cd /isaac-sim/InternUtopia && python internutopia/demo/b2z1_grasp_demo.py --object chair'
 ```
+
+### Local Isaac Sim + Conda
+
+Prerequisites:
+
+- NVIDIA Omniverse Isaac Sim 4.5 installed locally.
+- Conda.
+- Git LFS assets pulled.
+
+From the InternUtopia root, create the local environment:
+
+```bash
+bash setup_conda.sh
+conda activate internutopia
+```
+
+`setup_conda.sh` asks for the local Isaac Sim directory containing
+`isaac-sim.sh`, creates a matching Python conda env, and installs this checkout.
+
+Run the same demos directly:
+
+```bash
+python internutopia/demo/b2z1_asset_load.py
+python internutopia/demo/b2z1_locomotion.py --scene mini_home --headless --steps 500
+python internutopia/demo/b2z1_grasp_demo.py --object box --headless
+```
+
+For GUI mode, remove `--headless` and use a machine with a working display.
 
 ## Upload Checklist
 

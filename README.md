@@ -49,6 +49,13 @@ cp /path/to/assistant_robots_via_llm/demos/*.py ./
 cp /path/to/assistant_robots_via_llm/tools/play_scene_viewer.py toolkits/grscenes_scripts/
 ```
 
+## Runtime Options
+
+Docker is the tested path for this repository, but it is not required. The code
+can also run in a local Isaac Sim 4.5 + conda setup.
+
+### Option A: Docker
+
 Build the Docker image with the pinned Pinocchio dependency:
 
 ```bash
@@ -71,11 +78,47 @@ docker run --rm --gpus all --network host --ipc=host --shm-size=16g \
   -lc 'source /isaac-sim/.venv/bin/activate && . /isaac-sim/python.env.init && python mock_sim.py'
 ```
 
-Run a small B2Z1 smoke test without GRScenes:
+Run a small B2Z1 smoke test without GRScenes through the Docker wrapper:
 
 ```bash
 HEADLESS=1 STEPS=500 SCENE=mini_home ./run_b2z1_grscene.sh
 ```
+
+### Option B: Local Isaac Sim + Conda
+
+Prerequisites:
+
+- NVIDIA Omniverse Isaac Sim 4.5 installed locally.
+- Conda.
+- Git LFS assets pulled for this overlay repository.
+
+After applying the overlay, install InternUtopia with its local conda helper:
+
+```bash
+cd /path/to/InternUtopia
+bash setup_conda.sh
+conda activate internutopia
+```
+
+`setup_conda.sh` asks for the Isaac Sim directory containing `isaac-sim.sh`.
+It creates a conda env using the Python version from Isaac Sim and installs
+InternUtopia in editable mode. The integration patch adds `pin<4`, which is
+needed by the Z1 IK solver.
+
+Run the no-LLM mock simulation locally:
+
+```bash
+python mock_sim.py
+```
+
+Run the B2Z1 smoke test locally without Docker:
+
+```bash
+python internutopia/demo/b2z1_locomotion.py --scene mini_home --headless --steps 500
+```
+
+For GUI mode, leave off `--headless` and make sure the machine has a working
+display session.
 
 ## Notes
 
