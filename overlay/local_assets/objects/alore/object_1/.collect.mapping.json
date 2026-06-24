@@ -1,0 +1,23 @@
+{
+    "version": "1.0",
+    "file_records": [
+        {
+            "source_url": "/home/tone-li/Documents/isaac_model/jianyuan_model/3_floor_all/06-woshi/Collected_06ChildrenRoom/Office Chair_3/resource/img/3a15adc4c09c211f8c8d85d428554a89.png",
+            "source_hash": "c6d9eabd56e9f8200ccf0b78e26ec40019cd7385",
+            "target_url": "./resource/img/3a15adc4c09c211f8c8d85d428554a89.png",
+            "target_hash": "780cff2267449365332b5a5c6e80332255e2d118"
+        },
+        {
+            "source_url": "/home/tone-li/Documents/isaac_model/jianyuan_model/3_floor_all/06-woshi/Collected_06ChildrenRoom/Office Chair_3/resource/img/86fb1b49b272ed82a302c2607c349422.png",
+            "source_hash": "21644062259559a2d0d6a07918ee08777413eb56",
+            "target_url": "./resource/img/86fb1b49b272ed82a302c2607c349422.png",
+            "target_hash": "0f9a5b3137f320908f83aad8419bf2d41eb41732"
+        },
+        {
+            "source_url": "/home/tone-li/Documents/isaac_model/jianyuan_model/3_floor_all/06-woshi/Collected_06ChildrenRoom/Office Chair_3/resource/img/98a5dd28f53baf528e57f2e4a8cbd556.png",
+            "source_hash": "75e1c819dc991a1b601f578cf1262e2a197d4a73",
+            "target_url": "./resource/img/98a5dd28f53baf528e57f2e4a8cbd556.png",
+            "target_hash": "c80975136e529ddcaa178b94aad29a635d520d35"
+        }
+    ]
+}

@@ -1,0 +1,71 @@
+diff --git a/internutopia/core/runner.py b/internutopia/core/runner.py
+index 15c627f..f22373a 100644
+--- a/internutopia/core/runner.py
++++ b/internutopia/core/runner.py
+@@ -482,7 +482,7 @@ class SimulatorRunner:
+         native = self.config.simulator.native
+         webrtc = self.config.simulator.webrtc
+         self._simulation_app = SimulationApp(
+-            {'headless': headless, 'anti_aliasing': 0, 'hide_ui': False, 'multi_gpu': False}
++            {'headless': headless, 'anti_aliasing': 0, 'hide_ui': headless, 'multi_gpu': False}
+         )
+         self._simulation_app._carb_settings.set('/physics/cooking/ujitsoCollisionCooking', False)
+         log.debug('SimulationApp init done')
+diff --git a/internutopia_extension/configs/controllers/__init__.py b/internutopia_extension/configs/controllers/__init__.py
+index 42b17f9..386a436 100644
+--- a/internutopia_extension/configs/controllers/__init__.py
++++ b/internutopia_extension/configs/controllers/__init__.py
+@@ -1,6 +1,12 @@
+ from internutopia_extension.configs.controllers.aliengo_move_by_speed_controller import (
+     AliengoMoveBySpeedControllerCfg,
+ )
++from internutopia_extension.configs.controllers.arm_ik_controller import (
++    ArmIKControllerCfg,
++)
++from internutopia_extension.configs.controllers.b2_move_by_speed_controller import (
++    B2MoveBySpeedControllerCfg,
++)
+ from internutopia_extension.configs.controllers.dd_controller import (
+     DifferentialDriveControllerCfg,
+ )
+diff --git a/internutopia_extension/configs/robots/__init__.py b/internutopia_extension/configs/robots/__init__.py
+index e69de29..42e78cd 100644
+--- a/internutopia_extension/configs/robots/__init__.py
++++ b/internutopia_extension/configs/robots/__init__.py
+@@ -0,0 +1 @@
++from internutopia_extension.configs.robots.b2z1 import B2Z1RobotCfg
+diff --git a/internutopia_extension/controllers/__init__.py b/internutopia_extension/controllers/__init__.py
+index 49b90a0..ed6c9be 100644
+--- a/internutopia_extension/controllers/__init__.py
++++ b/internutopia_extension/controllers/__init__.py
+@@ -1,5 +1,7 @@
+ from internutopia_extension.controllers import (
+     aliengo_move_by_speed_controller,
++    arm_ik_controller,
++    b2_move_by_speed_controller,
+     dd_controller,
+     franka_mocap_teleop_controller,
+     g1_move_by_speed_controller,
+diff --git a/internutopia_extension/robots/__init__.py b/internutopia_extension/robots/__init__.py
+index 36263c0..a060e34 100644
+--- a/internutopia_extension/robots/__init__.py
++++ b/internutopia_extension/robots/__init__.py
+@@ -1,5 +1,6 @@
+ from internutopia_extension.robots import (
+     aliengo,
++    b2z1,
+     franka,
+     g1,
+     gr1,
+diff --git a/requirements/runtime.txt b/requirements/runtime.txt
+index 7d748e0..88c2c4b 100644
+--- a/requirements/runtime.txt
++++ b/requirements/runtime.txt
+@@ -7,6 +7,7 @@ ipython==8.20.0
+ lcm==1.5.0
+ onnxruntime==1.19.2
+ openai==1.29.0
++pin<4
+ pyyaml==6.0.1
+ rsl-rl-lib==2.2.1
+ transformers==4.26.1

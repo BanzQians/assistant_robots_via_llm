@@ -1,0 +1,26 @@
+{
+  "description": "B2Z1 多任务抓取搬运示例。机器人依次处理 tasks 列表中的每个物体。",
+  "robot_start": [0.0, 0.0, 0.55],
+  "objects": [
+    {
+      "name": "box_a",
+      "category": "box",
+      "position": [1.8, 0.0, 0.05]
+    },
+    {
+      "name": "chair_a",
+      "category": "chair",
+      "position": [0.5, 2.2, 0.0]
+    }
+  ],
+  "tasks": [
+    {
+      "object": "box_a",
+      "target": [-1.5, 0.0]
+    },
+    {
+      "object": "chair_a",
+      "target": [-1.5, 2.0]
+    }
+  ]
+}

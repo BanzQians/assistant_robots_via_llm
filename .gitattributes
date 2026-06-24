@@ -1,0 +1,11 @@
+overlay/local_assets/policies/**/*.pt filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.usd filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.usdz filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.dae filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.obj filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.mtl filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.STL filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.stl filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.png filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+overlay/local_assets/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
