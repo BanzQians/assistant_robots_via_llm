@@ -1,0 +1,97 @@
+diff --git a/internutopia_extension/controllers/b2_move_by_speed_controller.py b/internutopia_extension/controllers/b2_move_by_speed_controller.py
+index a74d1c0..135d63a 100644
+--- a/internutopia_extension/controllers/b2_move_by_speed_controller.py
++++ b/internutopia_extension/controllers/b2_move_by_speed_controller.py
+@@ -49,7 +49,8 @@ _ACTION_SCALE_SIM = np.array([
+ 
+ # Command scaling (match ALORE training: [2.0, 2.0, 0.25])
+ _COMMAND_SCALE = np.array([2.0, 2.0, 0.25], dtype=np.float32)
+-_GAIT_COMMAND_THRESHOLD = 0.01
++_GAIT_COMMAND_THRESHOLD = 0.1
++_DEFAULT_TARGET_WARMUP_CALLS = 10
+ 
+ # Low-level policy architecture params (must match trained checkpoint)
+ _LOW_LEVEL_KWARGS = {
+@@ -125,6 +126,7 @@ class B2MoveBySpeedController(BaseController):
+         self._gait_index = 0.0
+         self._apply_times_left = 0
+         self._applied_joint_positions: np.ndarray | None = None
++        self._policy_calls = 0
+ 
+     @staticmethod
+     def _load_policy(path: str):
+@@ -251,29 +253,32 @@ class B2MoveBySpeedController(BaseController):
+ 
+         obs = self._build_obs(forward_speed, lateral_speed, rotation_speed,
+                               joint_pos_sim, joint_vel_sim)
++        if not self._history_initialized:
++            self._obs_history[:] = obs
++            self._history_initialized = True
+ 
+         # Match ALORE: policy sees current obs plus the previous history buffer.
+         priv_buf = _PRIV_BUF
+         history_flat = self._obs_history.flatten()
+         policy_input = np.concatenate([obs, priv_buf, history_flat]).reshape(1, -1)
+ 
+-        # Infer
+-        with torch.inference_mode():
+-            action_real = (
+-                self._policy(
+-                    torch.tensor(policy_input, dtype=torch.float32),
+-                    hist_encoding=True,
+-                )
+-                .detach()
+-                .numpy()[0]
+-        )  # shape (18,) in real order
+-
+-        if not self._history_initialized:
+-            self._obs_history[:] = obs
+-            self._history_initialized = True
++        self._policy_calls += 1
++        if self._policy_calls <= _DEFAULT_TARGET_WARMUP_CALLS:
++            action_real = np.zeros(18, dtype=np.float32)
+         else:
+-            self._obs_history = np.roll(self._obs_history, -1, axis=0)
+-            self._obs_history[-1] = obs
++            # Infer
++            with torch.inference_mode():
++                action_real = (
++                    self._policy(
++                        torch.tensor(policy_input, dtype=torch.float32),
++                        hist_encoding=True,
++                    )
++                    .detach()
++                    .numpy()[0]
++            )  # shape (18,) in real order
++
++        self._obs_history = np.roll(self._obs_history, -1, axis=0)
++        self._obs_history[-1] = obs
+ 
+         # Zero arm joints (high-level arm control handles those separately)
+         action_real[12:] = 0.0
+diff --git a/internutopia_extension/robots/b2z1.py b/internutopia_extension/robots/b2z1.py
+index a3f54d2..2559aac 100644
+--- a/internutopia_extension/robots/b2z1.py
++++ b/internutopia_extension/robots/b2z1.py
+@@ -162,8 +162,8 @@ class B2Z1Robot(BaseRobot):
+     def post_reset(self):
+         super().post_reset()
+         self._robot_base = self._resolve_robot_base()
+-        self.articulation.set_solver_position_iteration_count(4)
+-        self.articulation.set_solver_velocity_iteration_count(0)
++        self.articulation.set_solver_position_iteration_count(8)
++        self.articulation.set_solver_velocity_iteration_count(2)
+         self.articulation.set_enabled_self_collisions(False)
+         self._set_gains()
+         self._set_standing_pose()
+@@ -191,8 +191,8 @@ class B2Z1Robot(BaseRobot):
+ 
+         try:
+             leg_subset = ArticulationSubset(self.articulation, _B2_STANDING_JOINTS)
+-            leg_kps = np.array([360.0] * 12)
+-            leg_kds = np.array([5.0] * 12)
++            leg_kps = np.array([700.0] * 12)
++            leg_kds = np.array([10.0] * 12)
+             self.articulation.set_gains(kps=leg_kps, kds=leg_kds, joint_indices=leg_subset.joint_indices)
+         except Exception as e:
+             log.warning(f'b2z1: could not set leg gains: {e}')

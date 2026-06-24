@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.vscode/
+.idea/
+
+# Do not commit local simulator assets or downloaded datasets.
+assets/
+assets_full/
+internutopia/assets/
+internutopia/assets_full/
+
+# Runtime logs and model/checkpoint artifacts.
+*.log
+*.log.json
+*.pth
+*.gguf
